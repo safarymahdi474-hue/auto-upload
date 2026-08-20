@@ -27,7 +27,10 @@ from telegram.ext import (
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "PUT_YOUR_BOT_TOKEN_HERE")
 SOURCE_GROUP_ID = int(os.environ.get("SOURCE_GROUP_ID", "-1001234567890"))
 TARGET_CHANNEL_ID = int(os.environ.get("TARGET_CHANNEL_ID", "-1009876543210"))
-CAPTION_TAG = os.environ.get("CAPTION_TAG", "تگ دلخواه شما")
+
+# کلمه‌ی اول تگ (بولد می‌شود) و مقدار بعد از آن
+TAG_LABEL = os.environ.get("TAG_LABEL", "ID")
+TAG_VALUE = os.environ.get("TAG_VALUE", "@HiromiyaStudio")
 
 # ===================================
 
@@ -71,8 +74,9 @@ async def handle_caption_reply(update: Update, context: ContextTypes.DEFAULT_TYP
     file_id = pending_videos.pop(prompt_id)
     user_caption = message.text or ""
 
-    # تگ به‌صورت نقل‌قول (blockquote) - از HTML استفاده می‌کنیم
-    final_caption = f"{user_caption}\n\n<blockquote>{CAPTION_TAG}</blockquote>"
+    # تگ به‌صورت نقل‌قول (blockquote) با کلمه‌ی اول بولد - از HTML استفاده می‌کنیم
+    tag_html = f"<blockquote><b>{TAG_LABEL}</b> : {TAG_VALUE}</blockquote>"
+    final_caption = f"{user_caption}\n\n{tag_html}"
 
     try:
         await context.bot.send_video(
